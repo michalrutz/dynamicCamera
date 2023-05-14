@@ -9,7 +9,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <>
     <Canvas
       camera={
-        { position : [0,0,-10], fov: 45 } 
+        { position : [0,0,-10],
+          fov: 35
+        } 
       }
       shadows
       eventSource={document.getElementById('root')}
