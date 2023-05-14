@@ -41,7 +41,7 @@ function Object1 ({handleClick, position, color}) {
       position = {position}
       ref={meshRef}
       onClick={ () => { handleClick(meshRef.current)} } >
-        <sphereGeometry />
+        <boxGeometry />
         <meshBasicMaterial color={color} />
       </mesh>
   )
