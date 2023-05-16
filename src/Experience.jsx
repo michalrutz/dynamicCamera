@@ -1,19 +1,31 @@
-import { ContactShadows, Html } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { easing } from "maath";
 import { useEffect, useRef, useState } from "react";
-import { DoubleSide } from "three";
+import { useSnapshot } from "valtio";
+import { state } from "./store";
+//COMPONENETS
+import { Table } from "./Table";
+import { Card } from "./Card";
+import { SingleCard } from "./assets/classes";
+import { emos } from "./assets/emojis";
+import { changeRotationValue, findCardByID, generateCardsOfClass_from_, shuffle } from "./assets/functions";
+import { cardParams , cardsPerRow } from "./assets/config"
+
+//generate doubles
+let emojis = emos.concat(emos);
 
 
-const card = {
-  width:0.9,
-  height:1.4
+function setXPostionInARow (i, cardsPerRow, width, gap ) {
+  let singleSpace = width+gap
+  let row = cardsPerRow+1*singleSpace
+  let x = (width + singleSpace*i) - (row)*0.5
+  return x 
 }
 
 export function Expereience() {
-  const { camera, viewport } = useThree()
-  const { width, height } = viewport;
 
+  const { pair} = useSnapshot(state)
+  const { camera } = useThree()
   const [ newCameraPosition, cameraSetPosition ] = useState(camera.position)
   const rectRef = useRef();
 
@@ -33,116 +45,83 @@ export function Expereience() {
     }
   )
 
-  useEffect( ()=> { rectRef.current.lookAt([0,0.5,0]) }, [])
-
-  const emojis = ["🏀","⚽", "🏐","🍍","🍉","🍈","💀","🧠", "🎸","🧭","🚀", "🏀","⚽", "🏐","🍍","🍉","🍈","💀","🧠", "🎸","🧭","🚀","💡","💡"];
-  const cardsPerRow = 8;
-
-  function xPos (index, cardsPerRow, gap ) {
-    let x = (card.width + index) - (cardsPerRow+1*card.width+gap)*0.5
-    return x 
+  let cardsSelected = 0;
+  /*CARDS*/
+  function cardClicked ( id, emoji, mesh ) {
+    //1.get the card
+    let selectedCard = findCardByID( state.deck, id ) 
+    //2. block click on rotation and check if the card is alredy selected
+    if(
+        selectedCard.isAnimated === false
+      && selectedCard.selected === false ){ 
+      if( pair.length === 0 ){ //check if first or second card was selected
+        selectedCard.setSelected()
+        state.pair = state.pair.concat(selectedCard)
+        animate (mesh, selectedCard)
+      } else if (pair.length === 1 && pair[0].id !== id){
+        selectedCard.setSelected()
+        state.pair = state.pair.concat(selectedCard)
+        animate (mesh, selectedCard)
+        cardsSelected = 2
+        //compare
+        if (cardsSelected === 2) {
+          setTimeout(() => {
+            if (state.pair[0].value !== state.pair[1].value ){
+              state.pair.forEach( (card, i) =>{ animate( 0, card, i ); card.setSelected() } )
+            }
+            state.pair=[]
+          }, 1200 );
+        } 
+      }
+    }
   }
-  function yPos (params) {
-    let y = (card.height + index) - (cardsPerRow+1*card.width+gap)*0.5
-    return y 
+
+  function animate (mesh, selectedCard, i ) {
+    selectedCard.setAnimated() //set isAnimated to true
+      changeRotationValue( mesh, selectedCard )
+      setTimeout(() => {
+        selectedCard.setAnimated() //set isAnimated back to false
+      }, 2000*i )
   }
+
+  /*SHUFFLE ONCE IMMIDATELY AFTER THE LOADING*/
+  useEffect( ()=> {
+    emojis = shuffle(emojis);
+    state.deck = generateCardsOfClass_from_( SingleCard, emojis )
+  }, [])
 
   let row = 0
   let col = Math.floor( emojis.length / cardsPerRow )/2
-  console.log(row)
 
   return (
     <>
       <ambientLight intensity={0.1}/>
-      <spotLight color={"pink"}  intensity={0.5} position={[ 5, 0.2, -10]} ref={rectRef} />
-      <spotLight color={"red"}   intensity={0.5} position={[-5, 0.2, -5]} ref={rectRef} />
-      <spotLight color={"blue"}  intensity={0.5} position={[ 5, 0.2, -5]} ref={rectRef} />
+      <spotLight color={"pink"}  intensity={0.5} position={[ 5, 0.2, -10]}  ref={rectRef} />
+      <spotLight color={"red"}   intensity={0.5} position={[-5, 0.2, -5]}   ref={rectRef} />
+      <spotLight color={"blue"}  intensity={0.5} position={[ 5, 0.2, -5]}   ref={rectRef} />
 
-       {emojis.map( (e,i,a) => {
-          if (i%cardsPerRow===0 & i!==0){ row = row+1 } 
-          return <Object1
-            handleClick = { changeCamXYZtoMeshXYZ }
-            position = {[ 
-              xPos(i, cardsPerRow, 0.1) - row*cardsPerRow , 
-              col - (row*1.075* card.height),  
-              0
-            ]}
-            color = {"orange"}
-            emoji = { e }
-          />
+       {state.deck.map( ( {id, value} ,i, a ) => {
+          if ( i%cardsPerRow === 0 & i!==0) { row = row+1 }
+          {/*GENERATE CARDS*/}
+            return (
+              <Card
+                key = {i}
+                id = {id}
+                moveCamera  = { changeCamXYZtoMeshXYZ }
+                cardClicked = { cardClicked }
+                cardParams  = { cardParams }
+                position    = {[ 
+                  setXPostionInARow( i, cardsPerRow, cardParams.width, cardParams.gap ) - row*cardsPerRow , 
+                  col - (row*1.075* cardParams.height),  
+                  0
+                ]}
+                color = {"orange"}
+                emoji = { value }
+              />)
         })}
-
-
-      <mesh
-        position = {[ 0, 0, 0.5]}
-        rotateX={Math.PI*2}
-      >
-        <boxGeometry args={[10,10,0.1]} />
-        <meshStandardMaterial color={"purple"} roughness={0.5}/>
-      </mesh>
+        <Table />
     </>
   );
 }
 
-function Object1 ({handleClick, position, color, emoji}) {
 
-  const meshRef = useRef()
-  const [ newRotation, setRotation ] = useState( [0,0,0] )
-  const [ isActive, setIsActive ] = useState( false )
-
-  function rotateMesh (mesh) {
-    let x = mesh.rotation.x-Math.PI;
-    let y = mesh.rotation.y-Math.PI;
-    let z = mesh.rotation.z-Math.PI;
-    setRotation( [0, y, 0] )   
-  }
-
-  useFrame( (s, d)=>{
-    easing.dampE (
-      meshRef.current.rotation,
-      newRotation,
-      0.3,
-      d
-    )
-  } )
-
-
-  return (
-    <>
-    <mesh
-      castShadow
-      recieveShadow
-      position    = {position}
-      ref         = {meshRef}
-      onClick     = { (event) => { event.stopPropagation( )
-        if (!isActive){
-          setIsActive(true)
-          handleClick(meshRef.current);
-          rotateMesh(meshRef.current);
-          setTimeout(() => {
-            setIsActive(false)
-          }, 1200 )
-        }
-
-      }
-      }
-    >
-        <boxGeometry args={[card.width,card.height, 0.05]} />
-        <meshStandardMaterial
-          color={color}
-          side={DoubleSide}
-          roughness={0.4}
-          metalness={0.5}
-          
-        />
-        <Html 
-          center occlude transform wrapperClass="emoji"
-          position={[0,0,0.2]}
-
-        >
-          {emoji}
-        </Html>
-      </mesh>
-      </>
-  )
-}
