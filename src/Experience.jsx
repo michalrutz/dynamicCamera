@@ -108,12 +108,12 @@ export function Expereience() {
   console.log(viewport)
 
   if (viewport.height > viewport.width){
-    cardsPerRow = 5
+    cardsPerRow = 4
   }
 
   if (viewport.width < 5) {
-    cardParams.width = 0.7
-    cardParams.height = 1.2
+    cardParams.width = 0.9
+    cardParams.height = 1
   }
 
 
@@ -125,7 +125,7 @@ export function Expereience() {
 
       <Center>
        {state.deck.map( ( {id, value} ,i, a ) => {
-          if ( i%cardsPerRow === 0 & i!==0) { row = row+1 }
+          if ( i%cardsPerRow === 0 ) { row = row+1 }
           {/*GENERATE CARDS*/}
             return (
               <Card
