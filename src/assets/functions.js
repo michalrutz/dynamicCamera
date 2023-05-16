@@ -36,4 +36,9 @@ const changeRotationValue = function ( mesh=0, card , rotation=1 ) {
       card.rotation = [0, y ,0]
     }
 
+const changePositionZ = function ( mesh=0, card , rotation=1 ) {
+      let y = card.rotation[1] - 1;
+      card.rotation = [0, y ,0]
+  }
+
 export { shuffle, generateCardsOfClass_from_, findCardByID, changeRotationValue }

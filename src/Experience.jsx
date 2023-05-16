@@ -54,12 +54,13 @@ export function Expereience() {
     if(
         selectedCard.isAnimated === false
       && selectedCard.selected === false ){ 
+        console.log("clicked")
       if( pair.length === 0 ){ //check if first or second card was selected
-        selectedCard.setSelected()
+        selectedCard.setSelected(true)
         state.pair = state.pair.concat(selectedCard)
         animate (mesh, selectedCard)
       } else if (pair.length === 1 && pair[0].id !== id){
-        selectedCard.setSelected()
+        selectedCard.setSelected(true)
         state.pair = state.pair.concat(selectedCard)
         animate (mesh, selectedCard)
         cardsSelected = 2
@@ -67,7 +68,14 @@ export function Expereience() {
         if (cardsSelected === 2) {
           setTimeout(() => {
             if (state.pair[0].value !== state.pair[1].value ){
-              state.pair.forEach( (card, i) =>{ animate( 0, card, i ); card.setSelected() } )
+              state.pair.forEach( (card, i) =>{
+                animate( 0, card );
+                card.setSelected(false)
+              } )
+            }else{
+              state.pair.forEach( card =>{
+                card.setColor("green")
+              } )
             }
             state.pair=[]
           }, 1200 );
@@ -76,12 +84,10 @@ export function Expereience() {
     }
   }
 
-  function animate (mesh, selectedCard, i ) {
+  function animate (mesh, selectedCard ) {
     selectedCard.setAnimated() //set isAnimated to true
       changeRotationValue( mesh, selectedCard )
-      setTimeout(() => {
-        selectedCard.setAnimated() //set isAnimated back to false
-      }, 2000*i )
+      selectedCard.setAnimated() //set isAnimated back to false
   }
 
   /*SHUFFLE ONCE IMMIDATELY AFTER THE LOADING*/
@@ -95,10 +101,9 @@ export function Expereience() {
 
   return (
     <>
-      <ambientLight intensity={0.1}/>
-      <spotLight color={"pink"}  intensity={0.5} position={[ 5, 0.2, -10]}  ref={rectRef} />
-      <spotLight color={"red"}   intensity={0.5} position={[-5, 0.2, -5]}   ref={rectRef} />
-      <spotLight color={"blue"}  intensity={0.5} position={[ 5, 0.2, -5]}   ref={rectRef} />
+      <ambientLight intensity={0.0}/>
+      <spotLight color={"pink"}  intensity={0.5} position={[ 5, 0.2, -10]}  ref={rectRef} castShadow/>
+
 
        {state.deck.map( ( {id, value} ,i, a ) => {
           if ( i%cardsPerRow === 0 & i!==0) { row = row+1 }
