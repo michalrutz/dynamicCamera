@@ -9,7 +9,7 @@ import { Card } from "./Card";
 import { SingleCard } from "./assets/classes";
 import { emos } from "./assets/emojis";
 import { changeRotationValue, findCardByID, generateCardsOfClass_from_, shuffle } from "./assets/functions";
-import { cardParams , cardsPerRow } from "./assets/config"
+import { Center } from "@react-three/drei";
 
 //generate doubles
 let emojis = emos.concat(emos);
@@ -17,7 +17,7 @@ let emojis = emos.concat(emos);
 
 function setXPostionInARow (i, cardsPerRow, width, gap ) {
   let singleSpace = width+gap
-  let row = cardsPerRow+1*singleSpace
+  let row = cardsPerRow+singleSpace
   let x = (width + singleSpace*i) - (row)*0.5
   return x 
 }
@@ -25,7 +25,7 @@ function setXPostionInARow (i, cardsPerRow, width, gap ) {
 export function Expereience() {
 
   const { pair} = useSnapshot(state)
-  const { camera } = useThree()
+  const { camera, viewport } = useThree()
   const [ newCameraPosition, cameraSetPosition ] = useState(camera.position)
   const rectRef = useRef();
 
@@ -96,15 +96,34 @@ export function Expereience() {
     state.deck = generateCardsOfClass_from_( SingleCard, emojis )
   }, [])
 
+  let cardParams = {
+    width:0.9,
+    height:1.4,
+    gap: 0.1
+  }
+  
   let row = 0
+  let cardsPerRow = 8
   let col = Math.floor( emojis.length / cardsPerRow )/2
+  console.log(viewport)
+
+  if (viewport.height > viewport.width){
+    cardsPerRow = 5
+  }
+
+  if (viewport.width < 5) {
+    cardParams.width = 0.7
+    cardParams.height = 1.2
+  }
+
+
 
   return (
     <>
       <ambientLight intensity={0.0}/>
       <spotLight color={"pink"}  intensity={0.5} position={[ 5, 0.2, -10]}  ref={rectRef} castShadow/>
 
-
+      <Center>
        {state.deck.map( ( {id, value} ,i, a ) => {
           if ( i%cardsPerRow === 0 & i!==0) { row = row+1 }
           {/*GENERATE CARDS*/}
@@ -124,6 +143,7 @@ export function Expereience() {
                 emoji = { value }
               />)
         })}
+        </Center>
         <Table />
     </>
   );

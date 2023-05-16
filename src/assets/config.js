@@ -4,7 +4,6 @@ const cardParams = {
         gap: 0.1
       }
 
-const cardsPerRow = 8;
 
 
-export { cardParams, cardsPerRow }
+export { cardParams }
