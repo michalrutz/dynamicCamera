@@ -50,7 +50,6 @@ export function Card ({ moveCamera, cardClicked, position, emoji, cardParams, id
             ref         = {meshRef}
             onClick     = {
               () => {
-                moveCamera(meshRef.current)
                 cardClicked( id, emoji, meshRef.current)
               }
              }
