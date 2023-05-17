@@ -4,7 +4,7 @@ import { useTexture } from "@react-three/drei"
 
 
 export function Table() {
-        const normal = useTexture("./public/Fabric_Lace_025_normal.jpg")
+        const normal = useTexture("./Fabric_Lace_025_normal.jpg")
 
         return <mesh
                 castShadow receiveShadow
