@@ -12,7 +12,7 @@ class SingleCard {
                 this.selected = Boolean
         }
         setColor() {
-                this.color = "green"
+                this.color = "gray"
         }
         setAnimated(){
                 this.isAnimated = !this.isAnimated

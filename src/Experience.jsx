@@ -25,7 +25,7 @@ function setXPostionInARow (i, cardsPerRow, width, gap ) {
 
 export function Expereience() {
 
-  const { pair, difficulty } = useSnapshot(state)
+  const { pair, count } = useSnapshot(state)
   const { camera, viewport } = useThree()
   const [ newCameraPosition, cameraSetPosition ] = useState(camera.position)
   const rectRef = useRef()
@@ -64,6 +64,7 @@ export function Expereience() {
       } else if (pair.length === 1 && pair[0].id !== id){
         selectedCard.setSelected(true)
         state.pair = state.pair.concat(selectedCard) //second card added
+        state.count += 1
         animate (mesh, selectedCard)
         {
           setTimeout(() => {
@@ -74,7 +75,7 @@ export function Expereience() {
               } )
             }else{
               state.pair.forEach( card =>{
-                card.setColor("green")
+                card.setColor()
               } )
             }
             state.pair=[]
@@ -96,7 +97,7 @@ export function Expereience() {
     state.deck =
       generateCardsOfClass_from_(
         SingleCard,
-        shuffle(emojis) );
+        shuffle(shuffle(emojis)) );
   }, [])
 
   let cardParams = {
@@ -110,6 +111,7 @@ export function Expereience() {
 
   let col = Math.floor( emojis.length / cardsPerRow )/2
 
+  
   if (viewport.height > viewport.width){ cardsPerRow = 4, camera.position.z = -15 }
   else if( emojis.length == 6*2 ){ cardsPerRow = 3 }
   else if( emojis.length == 12*2 ){ cardsPerRow = 8 }

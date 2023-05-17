@@ -1,4 +1,4 @@
-import { AccumulativeShadows, Html, RandomizedLight } from "@react-three/drei";
+import { AccumulativeShadows, ContactShadows, Html, RandomizedLight, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { easing } from "maath";
 import { useEffect, useRef, useState } from "react";
@@ -7,7 +7,8 @@ import { useSnapshot } from "valtio";
 import { state } from "./store";
 
 export function Card ({ moveCamera, cardClicked, position, emoji, cardParams, id}) {
-        
+  
+  const paper = useTexture("./Watercolor_Paper_001_NORM.jpg")
   const { deck } = useSnapshot(state)
   let selectedCard = deck.find( e=> e.id === id)
   const meshRef = useRef()
@@ -55,12 +56,13 @@ export function Card ({ moveCamera, cardClicked, position, emoji, cardParams, id
 
           >
             <boxGeometry args={[cardParams.width,cardParams.height, 0.01]} />
-            <meshStandardMaterial side = {DoubleSide} roughness={0.4} metalness={0.5} />
-            
+            <meshStandardMaterial roughness={0.4} metalness={0.5} normalMap={paper}/>
+
             <Html ref={htmlRef} wrapperClass="emoji" position={[0,0,0.2]} center occlude transform  >
               {emoji}
             </Html>
           </mesh>
+
         </>)
       }
 
