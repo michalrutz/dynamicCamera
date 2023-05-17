@@ -8,12 +8,11 @@ import { state } from "./store";
 
 export function Card ({ moveCamera, cardClicked, position, emoji, cardParams, id}) {
         
-        const { deck } = useSnapshot(state)
-        let selectedCard = deck.find( e=> e.id === id)
-        const meshRef = useRef()
-        const htmlRef = useRef()
-        const [ posZ , setPosZ ] = useState(0)
-
+  const { deck } = useSnapshot(state)
+  let selectedCard = deck.find( e=> e.id === id)
+  const meshRef = useRef()
+  const htmlRef = useRef()
+  const [ posZ , setPosZ ] = useState(0)
 
         useFrame( (state, delta)=>{
           easing.dampE (
@@ -25,7 +24,7 @@ export function Card ({ moveCamera, cardClicked, position, emoji, cardParams, id
           easing.dampC (
             meshRef.current.material.color,
             selectedCard.color,
-            0.4,
+            0.2,
             delta
           )
         } )
@@ -57,6 +56,7 @@ export function Card ({ moveCamera, cardClicked, position, emoji, cardParams, id
           >
             <boxGeometry args={[cardParams.width,cardParams.height, 0.01]} />
             <meshStandardMaterial side = {DoubleSide} roughness={0.4} metalness={0.5} />
+            
             <Html ref={htmlRef} wrapperClass="emoji" position={[0,0,0.2]} center occlude transform  >
               {emoji}
             </Html>

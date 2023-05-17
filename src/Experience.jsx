@@ -12,8 +12,9 @@ import { changeRotationValue, findCardByID, generateCardsOfClass_from_, shuffle 
 import { Center } from "@react-three/drei";
 
 //generate doubles
-let emojis = emos.concat(emos);
 
+
+//diffculty 6 8 12
 
 function setXPostionInARow (i, cardsPerRow, width, gap ) {
   let singleSpace = width+gap
@@ -24,10 +25,13 @@ function setXPostionInARow (i, cardsPerRow, width, gap ) {
 
 export function Expereience() {
 
-  const { pair} = useSnapshot(state)
+  const { pair, difficulty } = useSnapshot(state)
   const { camera, viewport } = useThree()
   const [ newCameraPosition, cameraSetPosition ] = useState(camera.position)
-  const rectRef = useRef();
+  const rectRef = useRef()
+  let emojis = emos.concat(emos)
+
+  //emojis = emos.splice( 0, difficulty )
 
   function changeCamXYZtoMeshXYZ (mesh) {
     // Focus the camera on the mesh
@@ -45,27 +49,23 @@ export function Expereience() {
     }
   )
 
-  let cardsSelected = 0;
   /*CARDS*/
   function cardClicked ( id, emoji, mesh ) {
     //1.get the card
     let selectedCard = findCardByID( state.deck, id ) 
     //2. block click on rotation and check if the card is alredy selected
-    if(
-        selectedCard.isAnimated === false
-      && selectedCard.selected === false ){ 
-        console.log("clicked")
-      if( pair.length === 0 ){ //check if first or second card was selected
+    if( 
+      selectedCard.isAnimated === false && selectedCard.selected === false ){ 
+      if( 
+        pair.length === 0 ){ //check if first or second card was selected
         selectedCard.setSelected(true)
         state.pair = state.pair.concat(selectedCard)
         animate (mesh, selectedCard)
       } else if (pair.length === 1 && pair[0].id !== id){
         selectedCard.setSelected(true)
-        state.pair = state.pair.concat(selectedCard)
+        state.pair = state.pair.concat(selectedCard) //second card added
         animate (mesh, selectedCard)
-        cardsSelected = 2
-        //compare
-        if (cardsSelected === 2) {
+        {
           setTimeout(() => {
             if (state.pair[0].value !== state.pair[1].value ){
               state.pair.forEach( (card, i) =>{
@@ -78,7 +78,7 @@ export function Expereience() {
               } )
             }
             state.pair=[]
-          }, 1200 );
+          }, 1100 );
         } 
       }
     }
@@ -90,33 +90,30 @@ export function Expereience() {
       selectedCard.setAnimated() //set isAnimated back to false
   }
 
+
   /*SHUFFLE ONCE IMMIDATELY AFTER THE LOADING*/
   useEffect( ()=> {
-    emojis = shuffle(emojis);
-    state.deck = generateCardsOfClass_from_( SingleCard, emojis )
+    state.deck =
+      generateCardsOfClass_from_(
+        SingleCard,
+        shuffle(emojis) );
   }, [])
 
   let cardParams = {
     width:0.9,
-    height:1.4,
+    height:1.2,
     gap: 0.1
   }
   
   let row = 0
-  let cardsPerRow = 8
+  let cardsPerRow = 6
+
   let col = Math.floor( emojis.length / cardsPerRow )/2
-  console.log(viewport)
 
-  if (viewport.height > viewport.width){
-    cardsPerRow = 4
-  }
-
-  if (viewport.width < 5) {
-    cardParams.width = 0.9
-    cardParams.height = 1
-  }
-
-
+  if (viewport.height > viewport.width){ cardsPerRow = 4, camera.position.z = -15 }
+  else if( emojis.length == 6*2 ){ cardsPerRow = 3 }
+  else if( emojis.length == 12*2 ){ cardsPerRow = 8 }
+   
 
   return (
     <>
