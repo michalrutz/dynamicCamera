@@ -4,13 +4,14 @@ import './styles.css'
 import Overlay from './Overlay'
 import { Expereience } from './Experience'
 import { Canvas } from '@react-three/fiber'
+import { OrbitControls } from '@react-three/drei'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>
     <Canvas
       camera={
-        { position : [ 0, -1.9,-12],
-          fov: 35
+        { position : [ 0, -3,-12],
+          fov: 35,
         } 
       }
       shadows

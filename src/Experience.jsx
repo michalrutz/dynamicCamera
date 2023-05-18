@@ -10,6 +10,7 @@ import { SingleCard } from "./assets/classes";
 import { emos } from "./assets/emojis";
 import { changeRotationValue, findCardByID, generateCardsOfClass_from_, shuffle } from "./assets/functions";
 import { Center } from "@react-three/drei";
+import { Group, Box3 } from "three";
 
 //generate doubles
 
@@ -115,14 +116,18 @@ export function Expereience() {
   if (viewport.height > viewport.width){ cardsPerRow = 4, camera.position.z = -15 }
   else if( emojis.length == 6*2 ){ cardsPerRow = 3 }
   else if( emojis.length == 12*2 ){ cardsPerRow = 8 }
-   
+  
 
-  return (
+
+  return (  
     <>
       <ambientLight intensity={0.0}/>
-      <spotLight color={"pink"}  intensity={0.5} position={[ 5, 0.2, -10]}  ref={rectRef} castShadow/>
-
-      <Center>
+      <spotLight color={"pink"}  intensity={0.9} position={[ 5, 0.2, -10]}  ref={rectRef} castShadow/>
+      <group position={[
+        cardsPerRow+0.1, 
+        viewport.height > viewport.width ? col+1 : col-1,
+        0
+      ]}>
        {state.deck.map( ( {id, value} ,i, a ) => {
           if ( i%cardsPerRow === 0 ) { row = row+1 }
           {/*GENERATE CARDS*/}
@@ -136,13 +141,13 @@ export function Expereience() {
                 position    = {[ 
                   setXPostionInARow( i, cardsPerRow, cardParams.width, cardParams.gap ) - row*cardsPerRow , 
                   col - (row*1.075* cardParams.height),  
-                  0
+                  0.2
                 ]}
                 color = {"orange"}
                 emoji = { value }
               />)
         })}
-        </Center>
+        </group>
         <Table />
     </>
   );

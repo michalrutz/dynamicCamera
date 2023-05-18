@@ -1,4 +1,4 @@
-import { AccumulativeShadows, ContactShadows, Html, RandomizedLight, useTexture } from "@react-three/drei";
+import { AccumulativeShadows, ContactShadows, Html, RandomizedLight, useGLTF, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { easing } from "maath";
 import { useEffect, useRef, useState } from "react";
@@ -6,9 +6,14 @@ import { DoubleSide } from "three";
 import { useSnapshot } from "valtio";
 import { state } from "./store";
 
+
 export function Card ({ moveCamera, cardClicked, position, emoji, cardParams, id}) {
   
   const paper = useTexture("./Watercolor_Paper_001_NORM.jpg")
+  useTexture.preload("./Watercolor_Paper_001_NORM.jpg")
+  const model = useGLTF("./card.glb")
+  console.log(model.scene.children[0].geometry)
+
   const { deck } = useSnapshot(state)
   let selectedCard = deck.find( e=> e.id === id)
   const meshRef = useRef()
@@ -30,21 +35,14 @@ export function Card ({ moveCamera, cardClicked, position, emoji, cardParams, id
           )
         } )
 
-        useFrame(
-          (state, delta) => { 
-            easing.damp3(
-              meshRef.current.position,
-              [meshRef.current.position.x,meshRef.current.position.y, posZ],
-              0.3,
-              delta
-            );
-            
-          }
-        )
+ 
 
 
           return (<>
           <mesh
+          geometry={model.scene.children[0].geometry}
+            scale={2}
+            rotation={[ 0, 0 , 0 ]}
             castShadow   
             position    = {position}
             ref         = {meshRef}
@@ -55,10 +53,9 @@ export function Card ({ moveCamera, cardClicked, position, emoji, cardParams, id
              }
 
           >
-            <boxGeometry args={[cardParams.width,cardParams.height, 0.01]} />
-            <meshStandardMaterial roughness={0.4} metalness={0.5} normalMap={paper}/>
+            <meshStandardMaterial roughness={0.3} metalness={0.8} side={DoubleSide} normalMap={paper} bumpMap={paper} bumpScale={0.5}/>
 
-            <Html ref={htmlRef} wrapperClass="emoji" position={[0,0,0.2]} center occlude transform  >
+            <Html scale={0.8} ref={htmlRef} wrapperClass="emoji" position={[0,0,0.03]} center occlude transform >
               {emoji}
             </Html>
           </mesh>
