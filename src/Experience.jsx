@@ -17,11 +17,17 @@ import { Group, Box3 } from "three";
 
 //diffculty 6 8 12
 
-function setXPostionInARow (i, cardsPerRow, width, gap ) {
+function setXposOfaCard (i, cardsPerRow, width, gap ) {
   let singleSpace = width+gap
-  let row = cardsPerRow+singleSpace
-  let x = (width + singleSpace*i) - (row)*0.5
-  return x 
+  let row = cardsPerRow*singleSpace;
+  let index = i
+
+  let x = (width + singleSpace*i)
+  while ( index>cardsPerRow-1 ) {
+    x = x - row 
+    index = index-cardsPerRow
+  }
+  return x
 }
 
 export function Expereience() {
@@ -104,7 +110,7 @@ export function Expereience() {
   let cardParams = {
     width:0.9,
     height:1.2,
-    gap: 0.1
+    gap: 0.2
   }
   
   let row = 0
@@ -124,7 +130,7 @@ export function Expereience() {
       <ambientLight intensity={0.0}/>
       <spotLight color={"pink"}  intensity={0.9} position={[ 5, 0.2, -10]}  ref={rectRef} castShadow/>
       <group position={[
-        cardsPerRow+0.1, 
+        -(cardsPerRow+1.1)/2, 
         viewport.height > viewport.width ? col+1 : col-1,
         0
       ]}>
@@ -139,7 +145,7 @@ export function Expereience() {
                 cardClicked = { cardClicked }
                 cardParams  = { cardParams }
                 position    = {[ 
-                  setXPostionInARow( i, cardsPerRow, cardParams.width, cardParams.gap ) - row*cardsPerRow , 
+                  setXposOfaCard( i, cardsPerRow, cardParams.width, cardParams.gap ), 
                   col - (row*1.075* cardParams.height),  
                   0.2
                 ]}

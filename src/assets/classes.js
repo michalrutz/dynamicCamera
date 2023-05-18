@@ -6,6 +6,7 @@ class SingleCard {
                 this.focused = false;
                 this.isAnimated = isAnimated;
                 this.rotation = [0, 0, 0];
+                this.position;
                 this.color = "white";
         }
         setSelected(Boolean){

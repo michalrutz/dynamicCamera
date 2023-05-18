@@ -108,10 +108,10 @@ nav{
 }
 
 .emoji {
-  opacity: 0.8;
-  color: black;
+  text-shadow: 0 0px 1px rgba(45, 236, 7, 0.6);
+  color: rgba(0, 0, 0, 0.0);
   width: 20px;
-  font-weight: 400;
+  font-weight: 700;
   text-orientation: upright;
   text-align: center;
   align-self: center;

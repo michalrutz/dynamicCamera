@@ -43,6 +43,7 @@ export function Card ({ moveCamera, cardClicked, position, emoji, cardParams, id
           geometry={model.scene.children[0].geometry}
             scale={2}
             rotation={[ 0, 0 , 0 ]}
+
             castShadow   
             position    = {position}
             ref         = {meshRef}
@@ -55,7 +56,11 @@ export function Card ({ moveCamera, cardClicked, position, emoji, cardParams, id
           >
             <meshStandardMaterial roughness={0.3} metalness={0.8} side={DoubleSide} normalMap={paper} bumpMap={paper} bumpScale={0.5}/>
 
-            <Html scale={0.8} ref={htmlRef} wrapperClass="emoji" position={[0,0,0.03]} center occlude transform >
+            <Html scale={0.8} 
+              ref={htmlRef} wrapperClass="emoji" 
+              position={[0,0.03,0.01]} 
+              center occlude transform
+            >
               {emoji}
             </Html>
           </mesh>
