@@ -62,7 +62,8 @@ export function Expereience() {
     let selectedCard = findCardByID( state.deck, id ) 
     //2. block click on rotation and check if the card is alredy selected
     if( 
-      selectedCard.isAnimated === false && selectedCard.selected === false ){ 
+      selectedCard.isAnimated === false && selectedCard.selected === false ){
+      state.count += 1
       if( 
         pair.length === 0 ){ //check if first or second card was selected
         selectedCard.setSelected(true)
@@ -71,7 +72,6 @@ export function Expereience() {
       } else if (pair.length === 1 && pair[0].id !== id){
         selectedCard.setSelected(true)
         state.pair = state.pair.concat(selectedCard) //second card added
-        state.count += 1
         animate (mesh, selectedCard)
         {
           setTimeout(() => {

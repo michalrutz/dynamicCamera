@@ -108,7 +108,7 @@ nav{
 }
 
 .emoji {
-  text-shadow: 0 0px 1px rgba(45, 236, 7, 0.6);
+  text-shadow: 0 0px 1px rgba(45, 236, 7, 0.65);
   color: rgba(0, 0, 0, 0.0);
   width: 20px;
   font-weight: 700;
@@ -116,5 +116,12 @@ nav{
   text-align: center;
   align-self: center;
   font-family: Arial, Helvetica, sans-serif;
+  transition: all 1s ease-in-out;
+}
+
+.emoji:hover{
+  text-shadow: 0 0px 1px rgba(45, 236, 7, 0.9);
+  scale: 1.002;
+  transition: all 0.2s ease-in;
 }
 
