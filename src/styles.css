@@ -111,9 +111,10 @@ nav{
   opacity: 0.8;
   color: black;
   width: 20px;
-  font-weight: 200;
+  font-weight: 400;
   text-orientation: upright;
   text-align: center;
   align-self: center;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
