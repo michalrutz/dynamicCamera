@@ -1,0 +1,33 @@
+<Clone
+            object={model.nodes.Cube.children}
+            scale={2}
+            rotation={[ 0, 0 , 0 ]}
+            castShadow    
+            ref         = { meshRef }
+            onClick     = {
+              () => {
+                cardClicked( id, emoji, meshRef.current );
+                
+              }
+             }
+
+          >
+            <meshStandardMaterial roughness={0.3} metalness={0.8} side={DoubleSide} normalMap={paper} bumpMap={paper} bumpScale={0.5}/>
+
+            <Html scale={0.9} 
+              ref={htmlRef} wrapperClass="emoji" 
+              position={[0,0.03,0.01]} 
+              center occlude transform
+            >
+              {emoji}
+            </Html>
+           
+          </Clone>
+
+
+easing.dampC (
+        meshRef.current.children[0].material.color,
+        selectedCard.color,
+        0.2,
+        delta
+      );

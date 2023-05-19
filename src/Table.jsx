@@ -8,11 +8,16 @@ export function Table() {
 
         return <mesh
                 castShadow receiveShadow
-                position = {[ 0, 0, 0.5]}
+                position = {[ 0, 0, 0.6]}
                 rotateX  = { Math.PI*2 }
                 scale={2}
         >
                 <boxGeometry args={[10,10,0.1]} />
-                <meshStandardMaterial color={"purple"} normalMap={normal}/>
+                <meshStandardMaterial color={"purple"}
+                        normalMap={normal}
+                        bumpMap={normal}
+                        bumpScale={100}
+                        roughnessMap={normal}
+                />
         </mesh>
 }

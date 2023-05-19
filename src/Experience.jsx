@@ -32,7 +32,7 @@ function setXposOfaCard (i, cardsPerRow, width, gap ) {
 
 export function Expereience() {
 
-  const { pair, count } = useSnapshot(state)
+  const { pair, count, deck } = useSnapshot(state)
   const { camera, viewport } = useThree()
   const [ newCameraPosition, cameraSetPosition ] = useState(camera.position)
   const rectRef = useRef()
@@ -69,21 +69,27 @@ export function Expereience() {
         selectedCard.setSelected(true)
         state.pair = state.pair.concat(selectedCard)
         animate (mesh, selectedCard)
+        state.deck[ deck.findIndex( (e)=> e.id === id) ].position[2] = -0.2;
       } else if (pair.length === 1 && pair[0].id !== id){
         selectedCard.setSelected(true)
         state.pair = state.pair.concat(selectedCard) //second card added
         animate (mesh, selectedCard)
+        state.deck[
+          deck.findIndex( (e)=> e.id === id) ]
+            .position[2] = -0.3;
         {
           setTimeout(() => {
             if (state.pair[0].value !== state.pair[1].value ){
               state.pair.forEach( (card, i) =>{
                 animate( 0, card );
+                card.position[2] = 0.2;
                 card.setSelected(false)
               } )
             }else{
               state.pair.forEach( card =>{
-                card.setColor()
-              } )
+                card.setColor("black");
+                card.position[2] = 0.2;
+              } ) 
             }
             state.pair=[]
           }, 1100 );
@@ -96,6 +102,7 @@ export function Expereience() {
     selectedCard.setAnimated() //set isAnimated to true
       changeRotationValue( mesh, selectedCard )
       selectedCard.setAnimated() //set isAnimated back to false
+      console.log(selectedCard.position)
   }
 
 
@@ -107,10 +114,21 @@ export function Expereience() {
         shuffle(shuffle(emojis)) );
   }, [])
 
+  useEffect( ()=> {
+    for (let i = 0; i < state.deck.length; i++) {
+      if ( i%cardsPerRow === 0 ) { row = row+1 }
+      state.deck[i].position = [ 
+        setXposOfaCard( i, cardsPerRow, cardParams.width, cardParams.gap ), 
+        col - (row*1.075* cardParams.height),  
+        0.2
+      ]
+    } 
+  },[viewport])  
+
   let cardParams = {
-    width:0.9,
-    height:1.2,
-    gap: 0.2
+    width: 0.9,
+    height:1.07,
+    gap: 0.05
   }
   
   let row = 0
@@ -127,15 +145,18 @@ export function Expereience() {
 
   return (  
     <>
-      <ambientLight intensity={0.0}/>
-      <spotLight color={"pink"}  intensity={0.9} position={[ 5, 0.2, -10]}  ref={rectRef} castShadow/>
+      <ambientLight intensity={0.1}/>
+
+      <spotLight color={"pink"}   intensity={0.8} position={[ 0, 1, -9]}  ref={rectRef} castShadow/>
+      <spotLight color={"red"}  intensity={0.2} position={[ 1, 1, -20]}   castShadow/>
+
       <group position={[
-        -(cardsPerRow+1.1)/2, 
-        viewport.height > viewport.width ? col+1 : col-1,
+        -(cardsPerRow+0.7)/2, 
+        viewport.height > viewport.width ? col+0.5 : col-1.5  ,
         0
       ]}>
-       {state.deck.map( ( {id, value} ,i, a ) => {
-          if ( i%cardsPerRow === 0 ) { row = row+1 }
+       {state.deck.map( ( {id, value, position} ,i, a ) => {
+          
           {/*GENERATE CARDS*/}
             return (
               <Card
@@ -144,11 +165,7 @@ export function Expereience() {
                 moveCamera  = { changeCamXYZtoMeshXYZ }
                 cardClicked = { cardClicked }
                 cardParams  = { cardParams }
-                position    = {[ 
-                  setXposOfaCard( i, cardsPerRow, cardParams.width, cardParams.gap ), 
-                  col - (row*1.075* cardParams.height),  
-                  0.2
-                ]}
+                position    = { position }
                 color = {"orange"}
                 emoji = { value }
               />)
