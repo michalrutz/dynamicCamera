@@ -9,8 +9,6 @@ import { Card } from "./Card";
 import { SingleCard } from "./assets/classes";
 import { emos } from "./assets/emojis";
 import { changeRotationValue, findCardByID, generateCardsOfClass_from_, shuffle } from "./assets/functions";
-import { Center } from "@react-three/drei";
-import { Group, Box3 } from "three";
 
 //generate doubles
 
@@ -32,7 +30,7 @@ function setXposOfaCard (i, cardsPerRow, width, gap ) {
 
 export function Expereience() {
 
-  const { pair, count, deck } = useSnapshot(state)
+  const { pair, deck } = useSnapshot(state)
   const { camera, viewport } = useThree()
   const [ newCameraPosition, cameraSetPosition ] = useState(camera.position)
   const rectRef = useRef()
@@ -87,8 +85,8 @@ export function Expereience() {
               } )
             }else{
               state.pair.forEach( card =>{
-                card.setColor("black");
-                card.position[2] = 0.2;
+                card.setColor();
+                card.position[2] = 0.3;
               } ) 
             }
             state.pair=[]
@@ -145,10 +143,16 @@ export function Expereience() {
 
   return (  
     <>
-      <ambientLight intensity={0.1}/>
+      <ambientLight intensity={0.15}/>
 
-      <spotLight color={"pink"}   intensity={0.8} position={[ 0, 1, -9]}  ref={rectRef} castShadow/>
-      <spotLight color={"red"}  intensity={0.2} position={[ 1, 1, -20]}   castShadow/>
+      <spotLight color={"white"}
+        intensity={1.1}
+        position={[ 0, 1, -25]}
+        ref={rectRef}
+        castShadow
+        decay={1}
+      />
+      <spotLight color={"red"}  intensity={1} position={[ 3, 2, -20]}   castShadow/>
 
       <group position={[
         -(cardsPerRow+0.7)/2, 
